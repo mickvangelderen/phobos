@@ -55,19 +55,18 @@ namespace {
 
         uint32_t size;
         if (!input.ReadVarint32(&size)) {
-            std::cerr << "Unable to decode packet size from serialized data." << std::endl;
-            exit(EXIT_FAILURE);
+            std::cout << "Unable to decode packet size from serialized data. Skipping message." << std::endl;
+            return;
         }
 
         SimulationMessage msg;
         if (!msg.ParsePartialFromCodedStream(&input)) {
-            std::cerr << "Unable to parse protobuf message." << std::endl;
-            exit(EXIT_FAILURE);
+            std::cout << "Unable to parse protobuf message. Skipping message." << std::endl;
+            return;
         }
 
         if (!input.ConsumedEntireMessage()) {
-            std::cerr << "Entire message not consumed. Number of extra bytes: " << input.BytesUntilLimit() << std::endl;
-            exit(EXIT_FAILURE);
+            std::cout << "Entire message not consumed. Number of extra bytes: " << input.BytesUntilLimit() << std::endl;
         }
 
         msg.PrintDebugString();
